@@ -1,20 +1,14 @@
 from .processing import process_tokens
+from .index import InvertedIndex
 
-def _token_matches(query_tokens: list[str], title: str,stopwords: list[str],) -> bool:
-    """Check whether any query token matches a token in the movie title."""
-    title_tokens = process_tokens(title, stopwords)
 
-    return any(
-        query_token in title_token
-        for query_token in query_tokens
-        for title_token in title_tokens
-    )
 
 
 def search(
     data: dict,
     query: str,
     stopwords: list[str],
+    index:InvertedIndex
 ) -> list[str]:
     """Search movie titles containing the given query and return up to 5 results."""
 
@@ -22,11 +16,18 @@ def search(
 
     if not query_tokens:
         return []
+    
+    results=[]
+    seen=set()
 
-    results = [
-        movie["title"]
-        for movie in data["movies"]
-        if _token_matches(query_tokens, movie["title"],stopwords)
-    ]
+    for token in query_tokens:
+        ids=index.get_documents(token)
+        for id in ids:
+            if id in seen:
+                continue
+            seen.add(id)
+            movie=index.docmap[id]
+            results.append(f"{movie['title']} ({id})")
 
-    return results[:5]
+
+    return results[:10]

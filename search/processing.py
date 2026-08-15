@@ -37,3 +37,13 @@ def process_tokens(text: str, stopwords: list[str]) -> list[str]:
     query_tokens = _tokenize(normalize_text(text))
     query_tokens = remove_stopwords(query_tokens, stopwords)
     return _stem_tokens(query_tokens)
+
+
+def tokenize_term(text: str, stopwords: list[str]) -> str:
+    """Tokenize a term and require exactly one resulting token."""
+    tokens = process_tokens(text, stopwords)
+
+    if len(tokens) != 1:
+        raise ValueError("Term must tokenize to exactly one token")
+
+    return tokens[0]

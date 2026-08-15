@@ -11,3 +11,4 @@ STOPWORDS_PATH = DATA_DIR / "stopwords.txt"
 
 INDEX_PATH =CACHE_DIR / "index.pkl"
 DOCMAP_PATH =CACHE_DIR / "docmap.pkl"
+TF_PATH =CACHE_DIR / "term_frequencies.pkl"
